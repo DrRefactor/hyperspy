@@ -1,4 +1,3 @@
-
 DROP EVENT IF EXISTS delete_unused_states;
 CREATE EVENT delete_unused_states
   ON SCHEDULE
@@ -14,17 +13,17 @@ DO
   );
 
 
-DROP EVENT stop_capsule_on_station;
+DROP EVENT IF EXISTS stop_capsule_on_station;
 CREATE EVENT stop_capsule_on_station
   ON SCHEDULE
     EVERY 1 SECOND
 DO CALL stop_capsules_on_station();
 
-drop event IF EXISTS start_capsule_from_station_continue;
-create EVENT start_capsule_from_station_continue
-  on SCHEDULE
-  every 30 SECOND
-  DO call start_capsules_from_station_continue();
+DROP EVENT IF EXISTS start_capsule_from_station_continue;
+CREATE EVENT start_capsule_from_station_continue
+  ON SCHEDULE
+    EVERY 30 SECOND
+DO CALL start_capsules_from_station_continue();
 
 
 

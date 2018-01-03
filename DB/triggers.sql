@@ -152,7 +152,7 @@ FOR EACH ROW
   BEGIN
     DECLARE id_ INT;
     DECLARE done INT DEFAULT FALSE;
-    DECLARE curr_from, curr_until, `from`, until DATETIME;
+    DECLARE curr_from, curr_until, from_date_, until DATETIME;
     DECLARE curs CURSOR FOR SELECT DISTINCT TIMETABLE_ID
                             FROM TIMETABLE_AT_TIMETABLE_DAY
                             WHERE TIMETABLE_DAY_DAY_OF_WEEK = new.TIMETABLE_DAY_DAY_OF_WEEK
@@ -166,7 +166,7 @@ FOR EACH ROW
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
     SELECT
-      `FROM`,
+      FROM_DATE,
       UNTIL
     FROM TIMETABLE
     WHERE ID = new.TIMETABLE_ID
@@ -185,14 +185,14 @@ FOR EACH ROW
       END IF;
 
       SELECT
-        `FROM`,
+        FROM_DATE,
         UNTIL
       FROM TIMETABLE
       WHERE ID = id_
-      INTO `from`, until;
+      INTO from_date_, until;
 
-      IF (curr_from BETWEEN `from` AND until)
-         OR (`from` BETWEEN curr_from AND curr_until)
+      IF (curr_from BETWEEN from_date_ AND until)
+         OR (from_date_ BETWEEN curr_from AND curr_until)
       THEN
         SIGNAL SQLSTATE '54003'
         SET MESSAGE_TEXT = 'Timetables overlap';

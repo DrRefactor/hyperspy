@@ -155,7 +155,7 @@ CREATE PROCEDURE start_capsules_from_origin_stations()
                               JOIN TIMETABLE_AT_TIMETABLE_DAY ON TIMETABLE.ID = TIMETABLE_AT_TIMETABLE_DAY.TIMETABLE_ID
                               JOIN TIMETABLE_DAY
                                 ON TIMETABLE_AT_TIMETABLE_DAY.TIMETABLE_DAY_DAY_OF_WEEK = TIMETABLE_DAY.DAY_OF_WEEK
-                            WHERE current_timestamp BETWEEN TIMETABLE.`FROM` AND TIMETABLE.UNTIL AND
+                            WHERE current_timestamp BETWEEN TIMETABLE.FROM_DATE AND TIMETABLE.UNTIL AND
                                   TIMETABLE_DAY.DAY_OF_WEEK = dayofweek(current_date);
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
