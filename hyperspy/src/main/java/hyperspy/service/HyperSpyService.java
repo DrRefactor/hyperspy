@@ -7,6 +7,7 @@ import hyperspy.domain.entity.InfrastructureElement;
 import hyperspy.domain.entity.Station;
 import hyperspy.domain.entity.WhereIsCapsule;
 import hyperspy.repository.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class HyperSpyService implements IHyperSpyService {
@@ -99,16 +101,15 @@ public class HyperSpyService implements IHyperSpyService {
         throw new RuntimeException();
     }
 
-    @Transactional
-    @Override
-    public CapsuleLocationDto findCapsule(final Integer id){
-        final WhereIsCapsule whereIsCapsule = whereIsCapsuleRepository.findByCapsuleSideNumber(id).orElseThrow(RuntimeException::new);
+    private CapsuleLocationDto findCapsule(final WhereIsCapsule whereIsCapsule){
+        // final WhereIsCapsule whereIsCapsule = whereIsCapsuleRepository.findByCapsuleSideNumber(id).orElseThrow(RuntimeException::new);
 
         final CapsuleLocationDto capsuleLocation = new CapsuleLocationDto();
-        capsuleLocation.setCapsuleId(id);
-        capsuleLocation.setInfratuctureElementId(whereIsCapsule.getInfrastructureElement().getId());
-
+        capsuleLocation.setCapsuleId(whereIsCapsule.getCapsuleSideNumber());
+        
         final InfrastructureElement infrastructureElement = whereIsCapsule.getInfrastructureElement();
+        capsuleLocation.setInfratuctureElementId(infrastructureElement.getId());
+
         final String type = infrastructureElement.getInfrastructureElementType().getType().toUpperCase();
 
         if(type.equals("STATION")) {
@@ -132,6 +133,16 @@ public class HyperSpyService implements IHyperSpyService {
         }
 
         return capsuleLocation;
+    }
+
+    @Transactional
+    @Override
+    public List<CapsuleLocationDto> findCapsules() {
+        return whereIsCapsuleRepository.findAll()
+            .stream()
+            .map(x -> findCapsule(x))
+            .collect(Collectors.toList());
+
     }
 
     private List findAll(JpaRepository repository){

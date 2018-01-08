@@ -20,7 +20,7 @@ public class TimetableTimeFreq implements Serializable {
 
     @Id
     @ManyToOne(optional = false)
-    @JoinColumn(name = " TIMETABLE_ID", nullable = false)
+    @JoinColumn(name = "TIMETABLE_ID", nullable = false)
     private Timetable timetable;
 
     @Column(name = "FREQUENCY", nullable = true)

@@ -5,12 +5,14 @@ import hyperspy.domain.dto.CapsuleLocationDto;
 import hyperspy.service.IHyperSpyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 public class HyperSpyController {
 
@@ -27,8 +29,8 @@ public class HyperSpyController {
         return hyperSpyService.getAll(type);
     }
 
-    @GetMapping(value = "/capsule/location/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public CapsuleLocationDto getCapsuleLocation(@PathVariable Integer id){
-        return hyperSpyService.findCapsule(id);
+    @GetMapping(value = "/capsule/location", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<CapsuleLocationDto> getCapsuleLocation(){
+        return hyperSpyService.findCapsules();
     }
 }

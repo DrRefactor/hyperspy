@@ -8,5 +8,5 @@ import java.util.List;
 public interface IHyperSpyService {
     List getAll(TypeEnum type);
 
-    CapsuleLocationDto findCapsule(Integer id);
+    List<CapsuleLocationDto> findCapsules();
 }
