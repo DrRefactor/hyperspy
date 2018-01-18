@@ -4,6 +4,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 @Getter
@@ -21,10 +24,12 @@ public class Timetable {
     @JoinColumn(name = "LINE_ID", nullable = false)
     private Line line;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "FROM_DATE", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fromDate;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "UNTIL", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date until;

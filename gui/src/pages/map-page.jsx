@@ -100,7 +100,7 @@ export default class MapPage extends Component {
             /> }
         </div>
         { details ? <div className='details'>
-            <Details node={this.state.details.node} summary={this.state.details.type} />
+            <Details node={this.state.details.node} summary={this.state.details.type} defaultOpen={true} />
           </div> : null }
       </div>
     )
