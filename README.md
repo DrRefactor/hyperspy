@@ -14,6 +14,7 @@ mvn clean install spring-boot:run
 ```
 cd ${rootDir}/gui
 npm install
+npm run build
 node server.js
 ```
 open localhost:4202
