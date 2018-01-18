@@ -29,7 +29,6 @@ DROP EVENT IF EXISTS start_capsule_from_origin_station;
 create event start_capsule_from_origin_station
   ON SCHEDULE
     EVERY 1 MINUTE
-DO CALL start_capsules_from_station_continue();
-
+DO CALL start_capsules_from_origin_stations();
 
 set GLOBAL EVENT_SCHEDULER = on;

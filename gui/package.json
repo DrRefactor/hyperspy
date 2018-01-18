@@ -25,7 +25,8 @@
   "scripts": {
     "start": "node server.js",
     "build-less": "lessc src/main.less > public/bundle.css",
-    "build-js": "browserify src/main.js --extension=jsx > public/bundle.js"
+    "build-js": "browserify src/main.js --extension=jsx > public/bundle.js",
+    "build": "npm run build-js && npm run build-less"
   },
   "browserify": {
     "transform": [

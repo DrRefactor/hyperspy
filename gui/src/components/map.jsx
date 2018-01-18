@@ -16,6 +16,7 @@ export default class Map extends Component {
     this.adjustWeelZoom = this.adjustWeelZoom.bind(this)
     this.onLineClick = this.onLineClick.bind(this)
     this.onCircleClick = this.onCircleClick.bind(this)
+    this.setMarkers = this.setMarkers.bind(this)
 
     this.markers = {}
     this.lines = {}
@@ -114,28 +115,16 @@ export default class Map extends Component {
   }
 
   setMarkers(connections = [], locations = [], stations = []) {
-    let markers = locations.reduce((r, x) => {
-      let marker = this.markers[x.capsuleId]
-      const longitude = _lng(x.coorX)
-      const latitude = _lat(x.coorY)
-      if (!marker) {
-        marker = leaflet.marker([latitude, longitude], { title: x.label })
-        marker.addEventListener('click', this.onMarkerClick)
-        marker.addTo(this.map)
-      }
-      else
-        marker.setLatLng([latitude, longitude])
-      r[x.capsuleId] = marker
-      return r;
-    }, {})
-
-    for (let name of Object.keys(this.markers)) {
-      if (!markers[name]) {
-        this.markers[name].removeEventListener('click', this.onMarkerClick)
-        this.markers[name].remove()
-      }
+    const { details } = this.props
+    let connectionId, locationId, stationId
+    if (details) {
+      if (details.type === 'connection')
+        connectionId = details.node.id
+      else if (details.type === 'location')
+        locationId = details.node.capsuleId
+      else if (details.type === 'station')
+        stationId = details.node.id
     }
-
     let lines = connections.reduce((r, x) => {
       let line = this.lines[x.id]
       const startLongitude = _lng(x.startStation.coorX)
@@ -144,6 +133,8 @@ export default class Map extends Component {
       const endLatitude = _lat(x.endStation.coorY)
 
       const latLngs = [[startLatitude, startLongitude], [endLatitude, endLongitude]]
+      const weight = x.id == connectionId ? 4 : 2
+      const opts = { weight, opacity: 0.25 }
       if (!line) {
         line = leaflet.polyline(latLngs)
         line.addEventListener('click', this.onLineClick)
@@ -152,6 +143,8 @@ export default class Map extends Component {
       else
         line.setLatLngs(latLngs)
       
+      line.setStyle(opts)
+
       r[x.id] = line
       return r;
     }, {})
@@ -167,14 +160,17 @@ export default class Map extends Component {
       let circle = this.circles[x.id]
       const longitude = _lng(x.coorX)
       const latitude = _lat(x.coorY)
+      const { radius, fillColor } = x.id == stationId ? { radius: 10, fillColor: '#dd0000' } : { radius: 5, fillColor: '#ff0000' }
+      const opts = { radius, fillColor, fill: true, color: '#f00000' }
       if (!circle) {
-        circle = leaflet.circleMarker([latitude, longitude],
-          { radius: 10, fillColor: '#ff0000', fill: true, color: '#f00000' })
+        circle = leaflet.circleMarker([latitude, longitude])
         circle.addEventListener('click', this.onCircleClick)
         circle.addTo(this.map)
       }
       else
         circle.setLatLng([latitude, longitude])
+
+      circle.setStyle(opts)
       r[x.id] = circle
       return r;
     }, {})
@@ -183,6 +179,32 @@ export default class Map extends Component {
       if (!circles[name]) {
         this.circles[name].removeEventListener('click', this.onCircleClick)
         this.circles[name].remove()
+      }
+    }
+
+    let markers = locations.reduce((r, x) => {
+      let marker = this.markers[x.capsuleId]
+      const longitude = _lng(x.coorX)
+      const latitude = _lat(x.coorY)
+      const radius = x.capsuleId == locationId ? 10 : 5
+      const opts = { radius, fillColor: '#000000', fill: true, stroke: false, fillOpacity: 1 }
+      if (!marker) {
+        marker = leaflet.circleMarker([latitude, longitude])
+        marker.addEventListener('click', this.onMarkerClick)
+        marker.addTo(this.map)
+      }
+      else
+        marker.setLatLng([latitude, longitude])
+
+      marker.setStyle(opts)
+      r[x.capsuleId] = marker
+      return r;
+    }, {})
+
+    for (let name of Object.keys(this.markers)) {
+      if (!markers[name]) {
+        this.markers[name].removeEventListener('click', this.onMarkerClick)
+        this.markers[name].remove()
       }
     }
     this.markers = markers

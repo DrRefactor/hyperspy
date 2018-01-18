@@ -122,8 +122,8 @@ public class HyperSpyService implements IHyperSpyService {
             final Integer distance = connection.getDistance();
             final Integer speed = connection.getMaxSpeed();
             final Long start = whereIsCapsule.getStartTime().getTime();
-            final Long s = speed * (new Date().getTime() - start);
-            final BigDecimal part = BigDecimal.valueOf(s.doubleValue() / distance.doubleValue());
+            final Double s = speed.doubleValue() * ((double)(new Date().getTime() - start) / (1000*3600));
+            final BigDecimal part = BigDecimal.valueOf(s / distance.doubleValue());
             final Station startStation = connection.getStartStation();
             final Station endStation = connection.getEndStation();
             final BigDecimal coorX = startStation.getCoorX().add(endStation.getCoorX().subtract(startStation.getCoorX()).multiply(part));

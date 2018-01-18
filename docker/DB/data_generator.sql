@@ -338,9 +338,9 @@ DELIMITER ;
 
 
 -- Run generators
-CALL cities_generator( 600 );
-CALL stations_generator( 300 ); -- argument -> scale on map; stations count = cities count
-CALL connections_generator( 400 );
+CALL cities_generator( 60 );
+CALL stations_generator( 30 ); -- argument -> scale on map; stations count = cities count
+CALL connections_generator( 40 );
 CALL lines_and_stops_generator();
 CALL timetables_generator();
-CALL capsules_generator( 10 );
+CALL capsules_generator( 3 );

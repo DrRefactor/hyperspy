@@ -69,7 +69,7 @@ export default class MapPage extends Component {
       .then(res => res.json())
   }
   render() {
-    const { fetching } = this.state
+    const { fetching, details } = this.state
     const loading = this.isLoading()
 
     const { connections, locations, stations } = this.state
@@ -79,22 +79,27 @@ export default class MapPage extends Component {
       <div className='map-page'>
         { loading ? null :
           <div className='leftnav'>
-            <input type='number' placeholder="Refresh rate" min='10' className='refresh-rate'
-              onBlur={this.onRefreshRateBlur} onChange={this.onRefreshRateChange} value={this.state.refreshRate} />
+            <div className='inline-form'>
+              <input type='number' placeholder="Refresh rate" min='10' className='refresh-rate'
+                onBlur={this.onRefreshRateBlur} onChange={this.onRefreshRateChange} value={this.state.refreshRate} />
+              <button className='submit' onClick={() => {}}>Submit</button>
+            </div>
             <label>
               Select line to show timetable:
               <select value={(this.state.line || {}).id} onChange={this.onLineChange}>
+                <option disabled selected value> -- select line -- </option>
                 { this.state.lines.map(line => <option key={line.id} value={line.id}>{line.name}</option>) }
               </select>
             </label>
           </div> }
         <div className={className}>
-          { loading ? <LoadingBox fetching={fetching} /> : <Map 
+          { loading ? <LoadingBox fetching={fetching} /> : <Map
+            autoFit={false} details={details}
             connections={connections} locations={locations} stations={stations}
             onLocationClick={this.onLocationClick} onStationClick={this.onStationClick} onConnectionClick={this.onConnectionClick}
             /> }
         </div>
-        { this.state.details ? <div className='details'>
+        { details ? <div className='details'>
             <Details node={this.state.details.node} summary={this.state.details.type} />
           </div> : null }
       </div>
@@ -108,9 +113,9 @@ export default class MapPage extends Component {
       clearInterval(this.refreshInterval)
       this.refreshInterval = null
     }
-    if (val < 10 || Number.isNaN(val)) {
+    if (val < 5 || Number.isNaN(val)) {
       this.setState({ refreshRate: '' })
-      return alert("Minimal refresh rate is 10")
+      return alert("Minimal refresh rate is 5")
     }
     this.setState({ refreshRate: val })
     
