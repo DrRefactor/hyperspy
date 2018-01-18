@@ -2,10 +2,8 @@ package hyperspy.service;
 
 import hyperspy.domain.TypeEnum;
 import hyperspy.domain.dto.CapsuleLocationDto;
-import hyperspy.domain.entity.Connection;
-import hyperspy.domain.entity.InfrastructureElement;
-import hyperspy.domain.entity.Station;
-import hyperspy.domain.entity.WhereIsCapsule;
+import hyperspy.domain.dto.TimetableFreqDto;
+import hyperspy.domain.entity.*;
 import hyperspy.repository.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +12,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +38,7 @@ public class HyperSpyService implements IHyperSpyService {
     private final ITimetableRepository timetableRepository;
     private final ITimetableTimeFreqRepository timetableTimeFreqRepository;
     private final IWhereIsCapsuleRepository whereIsCapsuleRepository;
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
     HyperSpyService(ICityRepository cityRepository, ICapsuleRepository capsuleRepository, ICapsuleTypeRepository capsuleTypeRepository, IConnectionRepository connectionRepository, IInfrastructureElementRepository infrastructureElementRepository,
@@ -102,7 +105,6 @@ public class HyperSpyService implements IHyperSpyService {
     }
 
     private CapsuleLocationDto findCapsule(final WhereIsCapsule whereIsCapsule){
-        // final WhereIsCapsule whereIsCapsule = whereIsCapsuleRepository.findByCapsuleSideNumber(id).orElseThrow(RuntimeException::new);
 
         final CapsuleLocationDto capsuleLocation = new CapsuleLocationDto();
         capsuleLocation.setCapsuleId(whereIsCapsule.getCapsuleSideNumber());
@@ -145,6 +147,43 @@ public class HyperSpyService implements IHyperSpyService {
 
     }
 
+    @Transactional
+    @Override
+    public void createTimetableFrequency(final Integer lineId, final TimetableFreqDto dto){
+        final Line line = lineRepository.findOne(lineId);
+        final Set<Timetable> timetables = timetableRepository.findByLine(line).collect(Collectors.toSet());
+        final Set<TimetableTimeFreq> freqTimetables = timetables.stream()
+                .map(t -> timetableTimeFreqRepository.findByTimetableAndStartHour(t.getId(), dto.getStartHour()))
+                .filter(t -> t.isPresent())
+                .map(t -> t.get())
+                .collect(Collectors.toSet());
+        if(freqTimetables.isEmpty()){
+            Timetable timetable = new Timetable();
+            timetable.setLine(line);
+            try {
+                timetable.setFromDate(sdf.parse("2018-01-31"));
+                timetable.setUntil(sdf.parse("2018-12-31"));
+                timetableRepository.save(timetable);
+                TimetableTimeFreq freqEntity = new TimetableTimeFreq();
+                freqEntity.setStartHour(dto.getStartHour());
+                freqEntity.setTimetable(timetable.getId());
+                freqEntity.setFrequency(dto.getFrequency());
+                timetableTimeFreqRepository.save(freqEntity);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Transactional
+    @Override
+    public void deleteTimetableFrequency(final Integer timetableId, final Date startHour){
+        final Optional<Timetable> timetable = timetableRepository.findById(timetableId);
+        if(timetable.isPresent()){
+            timetableTimeFreqRepository.findByTimetableAndStartHour(timetableId, startHour).ifPresent(t -> timetableTimeFreqRepository.delete(t));
+        }
+    }
+    
     private List findAll(JpaRepository repository){
         return repository.findAll();
     }

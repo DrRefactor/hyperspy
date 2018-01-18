@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Getter
+@Setter
 @Entity
 @EqualsAndHashCode(of = {"startHour", "timetable"})
 @Table(name = "TIMETABLE_TIME_FREQ", uniqueConstraints = @UniqueConstraint(columnNames={"TIMETABLE_ID", "START_HOUR"}))
@@ -19,9 +20,12 @@ public class TimetableTimeFreq implements Serializable {
     private Date startHour;
 
     @Id
+    @Column(name = "TIMETABLE_ID", nullable = false)
+    private Integer timetable;
+
     @ManyToOne(optional = false)
-    @JoinColumn(name = "TIMETABLE_ID", nullable = false)
-    private Timetable timetable;
+    @JoinColumn(name = "TIMETABLE_ID", referencedColumnName = "ID", insertable = false, updatable = false)
+    private Timetable timetableEntity;
 
     @Column(name = "FREQUENCY", nullable = true)
     private Integer frequency;
@@ -33,7 +37,7 @@ public class TimetableTimeFreq implements Serializable {
     @EqualsAndHashCode
     public static class TimetableTimeFrequencyPK implements Serializable {
         private Date startHour;
-        private Timetable timetable;
+        private Integer timetable;
     }
 
 }

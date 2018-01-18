@@ -2,14 +2,16 @@ package hyperspy.controller;
 
 import hyperspy.domain.TypeEnum;
 import hyperspy.domain.dto.CapsuleLocationDto;
+import hyperspy.domain.dto.TimetableFreqDto;
 import hyperspy.service.IHyperSpyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import java.util.Date;
 import java.util.List;
 
 @CrossOrigin
@@ -32,5 +34,15 @@ public class HyperSpyController {
     @GetMapping(value = "/capsule/location", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<CapsuleLocationDto> getCapsuleLocation(){
         return hyperSpyService.findCapsules();
+    }
+
+    @PostMapping(value = "/line/{id}/timetable", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void putTimetable(@PathVariable(name = "id") Integer lineId, @RequestBody TimetableFreqDto dto){
+        hyperSpyService.createTimetableFrequency(lineId, dto);
+    }
+
+    @DeleteMapping(value = "/line/{id}/timetable", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void deleteTimetableFrequency(@PathVariable(name = "id") Integer timetableId, @DateTimeFormat(pattern = "HH:mm")final Date startHour){
+        hyperSpyService.deleteTimetableFrequency(timetableId, startHour);
     }
 }
