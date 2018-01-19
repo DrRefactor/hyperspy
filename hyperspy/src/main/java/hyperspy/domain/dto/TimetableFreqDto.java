@@ -13,6 +13,10 @@ import java.util.Date;
 @Setter
 @Getter
 public class TimetableFreqDto {
+
+    @NotNull
+    private Integer lineId;
+
     @NotNull
     @Temporal(TemporalType.DATE)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone="Europe/Warsaw")

@@ -36,12 +36,12 @@ public class HyperSpyController {
         return hyperSpyService.findCapsules();
     }
 
-    @PostMapping(value = "/line/{id}/timetable", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void putTimetable(@PathVariable(name = "id") Integer lineId, @RequestBody TimetableFreqDto dto){
-        hyperSpyService.createTimetableFrequency(lineId, dto);
+    @PostMapping(value = "/timetable", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void putTimetable(@RequestBody TimetableFreqDto dto){
+        hyperSpyService.createTimetableFrequency(dto);
     }
 
-    @DeleteMapping(value = "/line/{id}/timetable", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "timetable/{id}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public void deleteTimetableFrequency(@PathVariable(name = "id") Integer timetableId, @DateTimeFormat(pattern = "HH:mm")final Date startHour){
         hyperSpyService.deleteTimetableFrequency(timetableId, startHour);
     }

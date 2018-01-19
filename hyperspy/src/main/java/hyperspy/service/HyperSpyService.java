@@ -149,8 +149,8 @@ public class HyperSpyService implements IHyperSpyService {
 
     @Transactional
     @Override
-    public void createTimetableFrequency(final Integer lineId, final TimetableFreqDto dto){
-        final Line line = lineRepository.findOne(lineId);
+    public void createTimetableFrequency(final TimetableFreqDto dto){
+        final Line line = lineRepository.findOne(dto.getLineId());
         final Set<Timetable> timetables = timetableRepository.findByLine(line).collect(Collectors.toSet());
         final Set<TimetableTimeFreq> freqTimetables = timetables.stream()
                 .map(t -> timetableTimeFreqRepository.findByTimetableAndStartHour(t.getId(), dto.getStartHour()))
@@ -158,26 +158,29 @@ public class HyperSpyService implements IHyperSpyService {
                 .map(t -> t.get())
                 .collect(Collectors.toSet());
         if(freqTimetables.isEmpty()){
-            Timetable timetable = new Timetable();
-            timetable.setLine(line);
-            try {
-                timetable.setFromDate(sdf.parse("2018-01-31"));
-                timetable.setUntil(sdf.parse("2018-12-31"));
-                timetableRepository.save(timetable);
-                TimetableTimeFreq freqEntity = new TimetableTimeFreq();
-                freqEntity.setStartHour(dto.getStartHour());
-                freqEntity.setTimetable(timetable.getId());
-                freqEntity.setFrequency(dto.getFrequency());
-                timetableTimeFreqRepository.save(freqEntity);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            timetables.forEach(t -> {
+//                Timetable timetable = new Timetable();
+//                timetable.setLine(line);
+//                try {
+//                    timetable.setFromDate(sdf.parse("2018-01-31"));
+//                    timetable.setUntil(sdf.parse("2018-12-31"));
+//                    timetableRepository.save(timetable);
+                    TimetableTimeFreq freqEntity = new TimetableTimeFreq();
+                    freqEntity.setStartHour(dto.getStartHour());
+                    freqEntity.setTimetable(t.getId());
+                    freqEntity.setFrequency(dto.getFrequency());
+                    timetableTimeFreqRepository.save(freqEntity);
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+         //       }
+            });
         }
     }
 
     @Transactional
     @Override
     public void deleteTimetableFrequency(final Integer timetableId, final Date startHour){
+
         final Optional<Timetable> timetable = timetableRepository.findById(timetableId);
         if(timetable.isPresent()){
             timetableTimeFreqRepository.findByTimetableAndStartHour(timetableId, startHour).ifPresent(t -> timetableTimeFreqRepository.delete(t));
