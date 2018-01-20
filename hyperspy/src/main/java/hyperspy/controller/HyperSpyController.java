@@ -7,10 +7,13 @@ import hyperspy.service.IHyperSpyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -37,12 +40,16 @@ public class HyperSpyController {
     }
 
     @PostMapping(value = "/timetable", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void putTimetable(@RequestBody TimetableFreqDto dto){
-        hyperSpyService.createTimetableFrequency(dto);
+    public ResponseEntity putTimetable(@RequestBody TimetableFreqDto dto){
+        if(hyperSpyService.createTimetableFrequency(dto))
+            return ResponseEntity.ok().build();
+        return ResponseEntity.badRequest().build();
     }
 
     @DeleteMapping(value = "timetable/{id}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteTimetableFrequency(@PathVariable(name = "id") Integer timetableId, @DateTimeFormat(pattern = "HH:mm")final Date startHour){
-        hyperSpyService.deleteTimetableFrequency(timetableId, startHour);
+    public ResponseEntity deleteTimetableFrequency(@PathVariable(name = "id") Integer timetableId, @RequestParam @NotNull @DateTimeFormat(pattern = "HH:mm") final Date startHour){
+        if(hyperSpyService.deleteTimetableFrequency(timetableId, startHour))
+            return ResponseEntity.ok().build();
+        return ResponseEntity.badRequest().build();
     }
 }

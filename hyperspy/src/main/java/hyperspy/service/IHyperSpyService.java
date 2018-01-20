@@ -12,8 +12,8 @@ public interface IHyperSpyService {
 
     List<CapsuleLocationDto> findCapsules();
 
-    void createTimetableFrequency(TimetableFreqDto dto);
+    boolean createTimetableFrequency(TimetableFreqDto dto);
 
-    void deleteTimetableFrequency(Integer timetableId, Date startHour);
+    boolean deleteTimetableFrequency(Integer timetableId, Date startHour);
 
 }

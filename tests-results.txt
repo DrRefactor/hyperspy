@@ -1,0 +1,78 @@
+macOS High Sierra
+2,6 GHz Intel Core i7
+16GB RAM
+
+1.
+GET - capsule/location - 1000 users - 2 repeats - 100 connections - 200 capsules
+
+summary +    125 in 00:00:12 =   10.5/s Avg:  6418 Min:  1737 Max: 11595 Err:     0 (0.00%) Active: 1000 Started: 1000 Finished: 0
+summary +    385 in 00:00:30 =   12.9/s Avg: 26251 Min: 11547 Max: 41519 Err:     0 (0.00%) Active: 998 Started: 1000 Finished: 2
+summary =    510 in 00:00:42 =   12.2/s Avg: 21390 Min:  1737 Max: 41519 Err:     0 (0.00%)
+summary +    391 in 00:00:30 =   13.0/s Avg: 55961 Min: 41090 Max: 70520 Err:     0 (0.00%) Active: 998 Started: 1000 Finished: 2
+summary =    901 in 00:01:12 =   12.6/s Avg: 36392 Min:  1737 Max: 70520 Err:     0 (0.00%)
+summary +    400 in 00:00:30 =   13.3/s Avg: 75740 Min: 61486 Max: 77770 Err:     0 (0.00%) Active: 700 Started: 1000 Finished: 300
+summary =   1301 in 00:01:42 =   12.8/s Avg: 48490 Min:  1737 Max: 77770 Err:     0 (0.00%)
+summary +    381 in 00:00:30 =   12.7/s Avg: 76308 Min: 75863 Max: 90850 Err:     0 (0.00%) Active: 319 Started: 1000 Finished: 681
+summary =   1682 in 00:02:12 =   12.8/s Avg: 54791 Min:  1737 Max: 90850 Err:     0 (0.00%)
+summary +    318 in 00:00:24 =   13.2/s Avg: 76287 Min: 75823 Max: 77058 Err:     0 (0.00%) Active: 0 Started: 1000 Finished: 1000
+summary =   2000 in 00:02:36 =   12.8/s Avg: 58209 Min:  1737 Max: 90850 Err:     0 (0.00%)
+
+
+GET - capsule/location - 1000 users - 100 connections - 200 capsules
+
+summary +    220 in 00:00:19 =   11.3/s Avg: 10203 Min:   957 Max: 19024 Err:     0 (0.00%) Active: 781 Started: 1000 Finished: 219
+summary +    392 in 00:00:30 =   13.1/s Avg: 33560 Min: 18578 Max: 48894 Err:     0 (0.00%) Active: 389 Started: 1000 Finished: 611
+summary =    612 in 00:00:49 =   12.4/s Avg: 25164 Min:   957 Max: 48894 Err:     0 (0.00%)
+summary +    372 in 00:00:30 =   12.4/s Avg: 63753 Min: 48903 Max: 79156 Err:     1 (0.27%) Active: 17 Started: 1000 Finished: 983
+summary =    984 in 00:01:19 =   12.4/s Avg: 39752 Min:   957 Max: 79156 Err:     1 (0.10%)
+summary +     16 in 00:00:01 =   17.7/s Avg: 79304 Min: 78255 Max: 80142 Err:     0 (0.00%) Active: 0 Started: 1000 Finished: 1000
+summary =   1000 in 00:01:20 =   12.5/s Avg: 40385 Min:   957 Max: 80142 Err:     1 (0.10%)
+
+
+2.
+GET - capsule/location - 10000 users - 100 connections - 200 capsules
+Couldn't create more then 3832 threads
+
+summary +    439 in 00:00:30 =   14.8/s Avg: 15937 Min:     0 Max: 33536 Err:   110 (25.06%) Active: 3618 Started: 4058 Finished: 440
+summary =    441 in 00:00:34 =   13.0/s Avg: 15877 Min:     0 Max: 33536 Err:   112 (25.40%)
+summary +    401 in 00:00:30 =   13.4/s Avg: 47092 Min: 31721 Max: 63326 Err:     0 (0.00%) Active: 3217 Started: 4058 Finished: 841
+summary =    842 in 00:01:04 =   13.2/s Avg: 30743 Min:     0 Max: 63326 Err:   112 (13.30%)
+summary +    399 in 00:00:30 =   13.3/s Avg: 76521 Min: 60355 Max: 93366 Err:     0 (0.00%) Active: 2818 Started: 4058 Finished: 1240
+summary =   1241 in 00:01:34 =   13.2/s Avg: 45461 Min:     0 Max: 93366 Err:   112 (9.02%)
+summary +    391 in 00:00:30 =   13.1/s Avg: 105874 Min: 90350 Max: 122699 Err:     0 (0.00%) Active: 2427 Started: 4058 Finished: 1631
+summary =   1632 in 00:02:04 =   13.2/s Avg: 59935 Min:     0 Max: 122699 Err:   112 (6.86%)
+summary +    379 in 00:00:30 =   12.6/s Avg: 136872 Min: 120528 Max: 153421 Err:     1 (0.26%) Active: 2048 Started: 4058 Finished: 2010
+summary =   2011 in 00:02:34 =   13.1/s Avg: 74435 Min:     0 Max: 153421 Err:   113 (5.62%)
+summary +    342 in 00:00:30 =   11.2/s Avg: 169086 Min: 153426 Max: 183127 Err:     1 (0.29%) Active: 1706 Started: 4058 Finished: 2352
+summary =   2353 in 00:03:04 =   12.8/s Avg: 88192 Min:     0 Max: 183127 Err:   114 (4.84%)
+summary +    359 in 00:00:30 =   12.2/s Avg: 197813 Min: 183497 Max: 213345 Err:     0 (0.00%) Active: 1347 Started: 4058 Finished: 2711
+summary =   2712 in 00:03:34 =   12.7/s Avg: 102703 Min:     0 Max: 213345 Err:   114 (4.20%)
+summary +    365 in 00:00:30 =   12.2/s Avg: 227530 Min: 211362 Max: 243275 Err:     0 (0.00%) Active: 982 Started: 4058 Finished: 3076
+summary =   3077 in 00:04:04 =   12.6/s Avg: 117510 Min:     0 Max: 243275 Err:   114 (3.70%)
+summary +    363 in 00:00:30 =   12.1/s Avg: 257761 Min: 242491 Max: 273508 Err:     0 (0.00%) Active: 618 Started: 4058 Finished: 3440
+summary =   3440 in 00:04:34 =   12.6/s Avg: 132310 Min:     0 Max: 273508 Err:   114 (3.31%)
+summary +    392 in 00:00:30 =   13.0/s Avg: 287398 Min: 272583 Max: 303553 Err:     1 (0.26%) Active: 227 Started: 4058 Finished: 3831
+summary =   3832 in 00:05:04 =   12.6/s Avg: 148175 Min:     0 Max: 303553 Err:   115 (3.00%)
+
+
+3.
+GET - capsule/location, /capsule - 2000 users - 100 connections - 200 capsules
+223 finished requests after 2 minutes
+
+summary +    942 in 00:00:17 =   56.5/s Avg:  8824 Min:   900 Max: 16205 Err:     1 (0.11%) Active: 2000 Started: 2000 Finished: 0
+summary +   1256 in 00:00:30 =   41.9/s Avg: 25460 Min: 14897 Max: 40671 Err:     0 (0.00%) Active: 2000 Started: 2000 Finished: 0
+summary =   2198 in 00:00:47 =   47.1/s Avg: 18330 Min:   900 Max: 40671 Err:     1 (0.05%)
+summary +    400 in 00:00:30 =   13.3/s Avg: 52570 Min: 40948 Max: 64783 Err:     0 (0.00%) Active: 2000 Started: 2000 Finished: 0
+summary =   2598 in 00:01:17 =   33.9/s Avg: 23602 Min:   900 Max: 64783 Err:     1 (0.04%)
+summary +    404 in 00:00:30 =   13.5/s Avg: 77133 Min: 64774 Max: 89155 Err:     0 (0.00%) Active: 2000 Started: 2000 Finished: 0
+summary =   3002 in 00:01:47 =   28.1/s Avg: 30806 Min:   900 Max: 89155 Err:     1 (0.03%)
+summary +    405 in 00:00:30 =   13.5/s Avg: 101258 Min: 89131 Max: 113508 Err:     0 (0.00%) Active: 1777 Started: 2000 Finished: 223
+summary =   3407 in 00:02:17 =   24.9/s Avg: 39181 Min:   900 Max: 113508 Err:     1 (0.03%)
+summary +    410 in 00:00:30 =   13.6/s Avg: 125204 Min: 113586 Max: 135329 Err:     0 (0.00%) Active: 1367 Started: 2000 Finished: 633
+summary =   3817 in 00:02:47 =   22.9/s Avg: 48421 Min:   900 Max: 135329 Err:     1 (0.03%)
+summary +    906 in 00:00:30 =   30.3/s Avg: 134275 Min: 110429 Max: 154025 Err:     0 (0.00%) Active: 461 Started: 2000 Finished: 1539
+summary =   4723 in 00:03:17 =   24.0/s Avg: 64890 Min:   900 Max: 154025 Err:     1 (0.02%)
+summary +    460 in 00:00:07 =   70.8/s Avg: 96811 Min: 83150 Max: 110965 Err:     0 (0.00%) Active: 0 Started: 2000 Finished: 2000
+summary =   5183 in 00:03:23 =   25.5/s Avg: 67723 Min:   900 Max: 154025 Err:     1 (0.02%)
+
+

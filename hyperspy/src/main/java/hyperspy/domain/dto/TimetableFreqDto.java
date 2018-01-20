@@ -3,10 +3,12 @@ package hyperspy.domain.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -23,5 +25,6 @@ public class TimetableFreqDto {
     private Date startHour;
 
     @NotNull
+    @Min(1)
     private Integer frequency;
 }
