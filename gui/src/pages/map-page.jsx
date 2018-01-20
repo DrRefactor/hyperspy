@@ -25,7 +25,7 @@ export default class MapPage extends Component {
     this.onLocationClick = this.onLocationClick.bind(this)
     this.onStationClick = this.onStationClick.bind(this)
     this.onRefreshRateChange = this.onRefreshRateChange.bind(this)
-    this.onRefreshRateBlur = this.onRefreshRateBlur.bind(this)
+    this.onRefreshRateSubmit = this.onRefreshRateSubmit.bind(this)
     this.refetch = this.refetch.bind(this)
     this.onLineChange = this.onLineChange.bind(this)
   }
@@ -79,11 +79,11 @@ export default class MapPage extends Component {
       <div className='map-page'>
         { loading ? null :
           <div className='leftnav'>
-            <div className='inline-form'>
-              <input type='number' placeholder="Refresh rate" min='10' className='refresh-rate'
-                onBlur={this.onRefreshRateBlur} onChange={this.onRefreshRateChange} value={this.state.refreshRate} />
-              <button className='submit' onClick={() => {}}>Submit</button>
-            </div>
+            <form className='inline-form' onSubmit={this.onRefreshRateSubmit.bind(this)}>
+              <input type='number' placeholder="Refresh rate" min='5' className='refresh-rate'
+                onChange={this.onRefreshRateChange} value={this.state.refreshRate} />
+              <input className='submit' type='submit' value="Submit" />
+            </form>
             <label>
               Select line to show timetable:
               <select value={(this.state.line || {}).id} onChange={this.onLineChange}>
@@ -91,6 +91,24 @@ export default class MapPage extends Component {
                 { this.state.lines.map(line => <option key={line.id} value={line.id}>{line.name}</option>) }
               </select>
             </label>
+            <form className='inline-form' onSubmit={this.onTimetableFreqSubmit.bind(this)}>
+              <input placeholder="Start hour(hh:mm)" onChange={this.onStartHourChange.bind(this)} />
+              <input placeholder="Frequency(mins)" type='number' min='0' onChange={this.onFrequencyChange.bind(this)} />
+              <input className='submit' type='submit' value="Submit" />
+            </form>
+            {
+              !(this.state.line && this.state.frequencyTimetable) ? null :
+              [<select value={this.state.frequencyTimetableEntry}
+                onChange={this.onFrequencyTimetableEntryChange.bind(this)}>
+                <option selected value=''> -- select timetable entry -- </option>
+                { this.state.frequencyTimetable
+                    .filter(x => x.timetableEntity.line.id == this.state.line.id)
+                    .map(x => <option key={x.startHour + x.timetableEntity.id} value={x.startHour + ';' + x.timetableEntity.id}>{`${x.startHour},\nfrom:${x.timetableEntity.fromDate}`}</option>)
+                }
+              </select>,
+              <button onClick={this.onTimetableEntryDelete.bind(this)}>Delete timetable entry</button>
+              ]
+            }
           </div> }
         <div className={className}>
           { loading ? <LoadingBox fetching={fetching} /> : <Map
@@ -105,17 +123,71 @@ export default class MapPage extends Component {
       </div>
     )
   }
-  onRefreshRateBlur(e) {
+  onTimetableEntryDelete() {
+    if (!this.state.line || !this.state.frequencyTimetable || !this.state.frequencyTimetableEntry)
+      return
+    const [startHour, timetable] = this.state.frequencyTimetableEntry.split(';')
+    const toDelete = this.state.frequencyTimetable
+      .filter(x => x.timetableEntity.line.id == this.state.line.id)
+      .find(x => x.timetable == timetable && x.startHour == startHour)
+    if (!toDelete)
+      return alert("Error while deleting timetable entry")
+    
+    return fetch(`http://localhost:8080/timetable/${toDelete.timetable}?startHour=${toDelete.startHour}`, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      }
+    })
+    .then(() => this.refetch())
+    .then(() => {
+      this.setState({ frequencyTimetableEntry: '' })
+      this.onLineChange({ target: { value: this.state.line && this.state.line.id || '' } })
+      alert(`Entry ${toDelete.startHour} ${toDelete.timetableEntity.fromDate} deleted`)
+    })
+  }
+  onStartHourChange(e) {
+    this.setState({ startHour: e.target.value })
+  }
+  onFrequencyChange(e) {
+    this.setState({ frequency: e.target.value })
+  }
+  onFrequencyTimetableEntryChange(e) {
+    this.setState({ frequencyTimetableEntry: e.target.value })
+  }
+  onTimetableFreqSubmit(e) {
+    e.preventDefault()
+    if (this.state.startHour == null || this.state.frequency == null || this.state.line == null)
+      return alert('Wrong timetable params')
+    const lineId = this.state.line.id
+    return fetch(`http://localhost:8080/timetable`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        lineId,
+        startHour: this.state.startHour,
+        frequency: this.state.frequency,
+      })
+    })
+    .then(() => this.refetch())
+    .then(() => this.onLineChange({ target: { value: lineId } }))
+  }
+
+  onRefreshRateSubmit(e) {
     e.preventDefault()
     e.stopPropagation()
-    const val = Number.parseInt(e.target.value)
-    if (this.refreshInterval) {
-      clearInterval(this.refreshInterval)
-      this.refreshInterval = null
-    }
+    const val = this.state.refreshRate
     if (val < 5 || Number.isNaN(val)) {
       this.setState({ refreshRate: '' })
       return alert("Minimal refresh rate is 5")
+    }
+    if (this.refreshInterval) {
+      clearInterval(this.refreshInterval)
+      this.refreshInterval = null
     }
     this.setState({ refreshRate: val })
     
@@ -141,8 +213,8 @@ export default class MapPage extends Component {
   onLineChange(e) {
     const id = e.target.value
     const line = this.state.lines.find(x => x.id == id)
-    let details = this.state.frequencyTimetable.find(x => x.timetable.line.id == id)
-    if (!line || !details)
+    let details = this.state.frequencyTimetable.filter(x => x.timetableEntity.line.id == id)
+    if (!line || !details.length)
       return alert(`Incorrect line ${id}`)
     details = { type: 'timetable', node: details }
     this.setState({ line, details })
@@ -151,11 +223,12 @@ export default class MapPage extends Component {
     return Promise.all([
       this._fetch('capsule/location'),
       this._fetch('connection'),
-      this._fetch('station')
+      this._fetch('station'),
+      this._fetch('timetable-time-frequency')
     ])
       .then(results => {
-        const [locations, connections, stations] = results
-        this.setState({ locations, connections, stations })
+        const [locations, connections, stations, frequencyTimetable] = results
+        this.setState({ locations, connections, stations, frequencyTimetable })
       })
   }
 }
